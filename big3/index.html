@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIG3チャレンジ</title>
+<meta name="description" content="タイミングよくタップしてスクワットを挙げるミニゲーム。失敗3回で終了、記録はブラウザ内に保存。">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("rm_theme")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="wrap">
+<header class="top">
+  <h1 class="brand">BIG3チャレンジ</h1>
+  <button id="mode" type="button" aria-label="表示モードを切り替え" title="表示モードを切り替え"></button>
+</header>
+
+<main>
+<!-- タイトル -->
+<section id="s-title" class="screen">
+  <div class="stage solo"><svg id="svg-title" viewBox="64 14 272 246" role="img" aria-label="スクワットをするプレーヤー"></svg></div>
+  <h2>スクワット</h2>
+  <ul class="rules">
+    <li>「しゃがむ」：深さのゲージが緑のときにタップ</li>
+    <li>「たつ」：力のゲージが緑のときにタップ</li>
+    <li>成功すると5kg重くなります。失敗3回で終了です。</li>
+  </ul>
+  <div class="best-box"><span class="k">自己ベスト</span><span class="v" id="t-best">記録なし</span><span class="sub" id="t-plays"></span></div>
+  <button id="btn-start" class="btn" type="button">スタート</button>
+  <p class="links"><a href="../">RM換算表へ</a></p>
+  <p class="note">重量はゲーム内の数字で、実際の筋力の目安ではありません。</p>
+  <!-- ad placeholder; none during play -->
+  <div class="ad-slot" data-slot="title"></div>
+</section>
+
+<!-- ゲーム -->
+<section id="s-game" class="screen" hidden data-phase="ready">
+  <div class="hud">
+    <div class="weight"><span class="lbl">挑戦重量</span><span class="num"><b id="g-weight">60</b><small>kg</small></span></div>
+    <div class="fails"><span class="lbl">失敗</span><span class="pips" id="g-pips" role="img" aria-label="失敗0回"><i></i><i></i><i></i></span></div>
+  </div>
+  <div class="plates-text" id="g-plates"></div>
+  <div class="msg" id="g-msg" aria-live="polite">構え中</div>
+  <div class="field">
+    <div class="stage"><svg id="svg-game" viewBox="64 14 272 246" role="img" aria-label="スクワットをするプレーヤー"></svg></div>
+    <div class="gauge gv" id="gv" data-cap="深さ"><div class="zone" id="gv-zone"></div><div class="mk" id="gv-mk"></div></div>
+    <div class="gauge gh" id="gh" data-cap="力"><div class="zone" id="gh-zone"></div><div class="mk" id="gh-mk"></div></div>
+    <div class="timer"><div id="g-timer"></div></div>
+  </div>
+  <button id="act" class="btn big" type="button">構え中</button>
+  <p class="hint">スペースキー / Enterキーでも操作できます</p>
+</section>
+
+<!-- 結果 -->
+<section id="s-result" class="screen" hidden>
+  <h2>結果</h2>
+  <div class="best-box">
+    <span class="k">今回の最高</span><span class="v" id="r-best">-</span>
+    <span class="sub" id="r-lifts"></span>
+    <span class="pb" id="r-pb" hidden>自己ベスト更新</span>
+    <span class="sub" id="r-pbtxt"></span>
+  </div>
+  <h3>最近の記録</h3>
+  <div class="tw"><table id="r-table"><thead><tr><th>日時</th><th>最高</th><th>成功</th></tr></thead><tbody id="r-body"></tbody></table></div>
+  <button id="btn-retry" class="btn" type="button">もう一度</button>
+  <button id="btn-reset" class="btn ghost" type="button">記録をリセット</button>
+  <p class="links"><a href="../">RM換算表へ</a></p>
+  <p class="note">重量はゲーム内の数字で、実際の筋力の目安ではありません。</p>
+  <!-- ad placeholder; none during play -->
+  <div class="ad-slot" data-slot="result"></div>
+</section>
+</main>
+</div>
+<script src="storage.js"></script>
+<script src="game.js"></script>
+</body></html>
