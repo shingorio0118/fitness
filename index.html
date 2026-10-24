@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RM換算表｜重量×回数の推定1RMマトリクス</title>
+<meta name="description" content="縦=重量、横=回数で推定1RMが一目でわかる換算表。ベンチプレス・スクワット・デッドリフトの目安に。">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:#14171c;color:#e8ecf1;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:20px 12px 50px}
+h1{font-size:1.4rem;margin:.2em 0}.lead{opacity:.75;margin:0 0 14px;font-size:.9rem}
+.card{background:#1e232b;border-radius:14px;padding:14px;margin:12px 0}
+.ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.ctl div{flex:1;min-width:110px}label{display:block;font-size:.76rem;opacity:.75;margin-bottom:3px}
+select,input{width:100%;font-size:1rem;padding:8px;border-radius:9px;border:1px solid #394150;background:#14171c;color:#fff}
+.sel{margin-top:12px;font-size:.9rem;min-height:2.6em;padding:8px 10px;background:#262c36;border-radius:10px}.sel b{color:#ff8a5c;font-size:1.15rem}
+.tw{overflow:auto;max-height:68vh;border-radius:10px;border:1px solid #2c333f}
+table{border-collapse:separate;border-spacing:0;font-size:.88rem;width:100%;min-width:560px;text-align:right}
+th,td{padding:7px 8px;border-bottom:1px solid #2c333f;border-right:1px solid #232933;white-space:nowrap}
+thead th{position:sticky;top:0;background:#262c36;z-index:2;font-size:.78rem}
+tbody th{position:sticky;left:0;background:#262c36;z-index:1;text-align:right;font-weight:700}
+thead th:first-child{left:0;z-index:3;text-align:right}
+td{cursor:pointer;font-variant-numeric:tabular-nums}
+td.rl,th.rl{background:#33291f}td.cl{background:#33291f}td.hit{background:#e8643c;color:#fff;font-weight:700}
+tbody tr:nth-child(5n) td,tbody tr:nth-child(5n) th{border-bottom-color:#4a5262}
+.note{font-size:.78rem;opacity:.65;line-height:1.7}
+</style></head><body><div class="wrap">
+<h1>🏋️ RM換算表</h1><p class="lead">縦が重量、横が回数。交わったマスが、推定1RM（kg）です。マスをタップすると行と列が光ります。</p>
+<div class="card"><div class="ctl">
+<div><label for="s">開始重量（kg）</label><input id="s" type="number" inputmode="decimal" min="0" step="2.5" value="40"></div>
+<div><label for="st">重量の刻み</label><select id="st"><option>1.25</option><option>2.5</option><option selected>5</option><option>10</option></select></div>
+<div><label for="n">行数</label><select id="n"><option>15</option><option selected>25</option><option>40</option></select></div>
+<div><label for="f">計算式</label><select id="f"><option value="avg" selected>平均（Epley＋Brzycki）</option><option value="ep">Epley</option><option value="br">Brzycki</option></select></div>
+</div><div class="sel" id="sel">マスをタップすると、ここに「○kg×○回 → 推定1RM ○kg」と出ます。</div></div>
+<div class="tw"><table id="t"></table></div>
+<div class="card"><p class="note">Epley式は重量×(1+回数÷30)、Brzycki式は重量×36÷(37−回数)で計算しています。回数が10回を超えると誤差が大きくなるので、横軸は12回までです。数値は0.5kg単位に丸めています。この表は種目を区別せず、ベンチプレス・スクワット・デッドリフトで共通の目安です。実際は種目や個人差でずれ、種目ごとに別の計算式を使う換算表もあります。1RMに挑戦するときは、補助者をつけるなど安全に気をつけてください。</p></div>
+</div>
+<script>
+const $=id=>document.getElementById(id),R=12;
+function est(w,r,f){const e=r===1?w:w*(1+r/30),b=r===1?w:w*36/(37-r);return f==="ep"?e:f==="br"?b:(e+b)/2}
+const fmt=x=>{const v=Math.round(x*2)/2;return Number.isInteger(v)?String(v):v.toFixed(1)};
+const fmtW=x=>Number.isInteger(x)?String(x):String(Math.round(x*100)/100);
+let selR=-1,selC=-1;
+function draw(){const s=Math.max(0,parseFloat($("s").value)||0),st=parseFloat($("st").value),n=parseInt($("n").value,10),f=$("f").value;
+let h="<thead><tr><th>重量＼回数</th>";for(let r=1;r<=R;r++)h+=`<th data-c="${r}">${r}回</th>`;h+="</tr></thead><tbody>";
+for(let i=0;i<n;i++){const w=s+i*st;h+=`<tr><th data-r="${i}">${fmtW(w)} kg</th>`;for(let r=1;r<=R;r++)h+=`<td data-r="${i}" data-c="${r}" data-w="${w}">${fmt(est(w,r,f))}</td>`;h+="</tr>"}
+$("t").innerHTML=h+"</tbody>";selR=selC=-1;$("sel").innerHTML="マスをタップすると、ここに「○kg×○回 → 推定1RM ○kg」と出ます。"}
+$("t").addEventListener("click",e=>{const td=e.target.closest("td");if(!td)return;
+document.querySelectorAll(".rl,.cl,.hit").forEach(x=>x.classList.remove("rl","cl","hit"));
+const r=td.dataset.r,c=td.dataset.c;document.querySelectorAll(`[data-r="${r}"]`).forEach(x=>x.classList.add("rl"));document.querySelectorAll(`td[data-c="${c}"]`).forEach(x=>x.classList.add("cl"));td.classList.add("hit");
+$("sel").innerHTML=`${fmtW(parseFloat(td.dataset.w))}kg × ${c}回 → 推定1RM <b>${td.textContent} kg</b>`});
+["s","st","n","f"].forEach(i=>$(i).addEventListener("input",draw));draw();
+</script></body></html>
