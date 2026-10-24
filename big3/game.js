@@ -92,27 +92,18 @@
       if (key === plateKey) return;
       plateKey = key;
       barBack.textContent = ""; barFront.textContent = "";
-      var list = platesFor(total), sum = 0, i;
-      for (i = 0; i < list.length; i++) sum += PLATE_STYLE[list[i]].w + 1;
-      var k = Math.min(1, 62 / Math.max(1, sum)), off = 30, pos = [];
-      for (i = 0; i < list.length; i++) {
-        var st = PLATE_STYLE[list[i]];
-        pos.push({ st: st, o: off + st.w * k * 0.5 });
-        off += (st.w + 1) * k;
+      // 真横から見た絵: バーは点、プレートは正面の丸（同心円）。体の後ろ側に描く
+      var list = platesFor(total), n = list.length, step = n > 1 ? Math.min(1.8, 9 / (n - 1)) : 0, i;
+      // 内側（体に近い）プレートから順に、少しずつ左上へずらして重ね、枚数が分かるようにする
+      for (i = 0; i < n; i++) {
+        var st = PLATE_STYLE[list[i]], o = (n - 1 - i) * step;
+        mk("circle", { cx: f(-o), cy: f(-o * 0.6), r: st.r, fill: st.c, stroke: "var(--plstroke)", "stroke-width": 1 }, barBack);
+        if (st.r >= 18) mk("circle", { cx: f(-o), cy: f(-o * 0.6), r: st.r * 0.62, fill: "none", stroke: "var(--plstroke)", "stroke-width": 0.6, opacity: 0.45 }, barBack);
       }
-      var end = off + 10, SL = 0.17; // 軸の傾き（奥は右上、手前は左下）
-      mk("line", { x1: 0, y1: 0, x2: end, y2: -end * SL, "class": "s-bar", "stroke-width": 3.5 }, barBack);
-      mk("line", { x1: 0, y1: 0, x2: -end, y2: end * SL, "class": "s-bar", "stroke-width": 3.5 }, barFront);
-      function plate(parent, o, sgn, st, last) {
-        var cx = sgn * o, cy = -sgn * o * SL;
-        mk("ellipse", { cx: f(cx), cy: f(cy), rx: Math.max(3.2, st.r * 0.24), ry: st.r, fill: st.c, stroke: "var(--plstroke)", "stroke-width": 1 }, parent);
-        if (last) mk("ellipse", { cx: f(cx), cy: f(cy), rx: 1.6, ry: 3.2, "class": "s-barf" }, parent);
-      }
-      // 奥側は外側から内側へ、手前側は内側から外側へ描く（重なり順）
-      for (i = pos.length - 1; i >= 0; i--) plate(barBack, pos[i].o, 1, pos[i].st, i === pos.length - 1);
-      for (i = 0; i < pos.length; i++) plate(barFront, pos[i].o, -1, pos[i].st, i === pos.length - 1);
-      mk("circle", { cx: 0, cy: 0, r: 3.2, "class": "s-barf" }, barFront);
-      bp.plateTop = list.length ? 26 : 4;
+      var cxo = -0, cyo = 0;
+      mk("circle", { cx: 0, cy: 0, r: 4.2, "class": "s-barf", stroke: "var(--plstroke)", "stroke-width": 0.8 }, barBack);
+      mk("circle", { cx: 0, cy: 0, r: 2.8, "class": "s-barf" }, barFront);
+      bp.plateTop = n ? 26 : 4;
     }
 
     /* p: { d:深さ0〜1+, tilt:度, drop:0〜1, anchor:{x,y}, shake:px } */
@@ -133,7 +124,7 @@
         P = { x: an.x - 60 * drop, y: an.y + (FLOOR - 27 - an.y) * e };
       }
       var tilt = (p.tilt || 0) * (1 - drop), rad = tilt * Math.PI / 180;
-      var gx = -19, gy = 2.5; // 握る位置（バー上の手前方向）
+      var gx = 0, gy = 4; // 握る位置（バー上の手前方向）
       var Hand = { x: P.x + gx * Math.cos(rad) - gy * Math.sin(rad), y: P.y + gx * Math.sin(rad) + gy * Math.cos(rad) };
       var hang = { x: Sh.x - 4, y: Sh.y + 56 }, u = Math.min(1, drop * 3);
       Hand = { x: lerp(Hand.x, hang.x, u), y: lerp(Hand.y, hang.y, u) };
