@@ -30,7 +30,7 @@ tbody tr:nth-child(5n) td,tbody tr:nth-child(5n) th{border-bottom-color:var(--st
 </style></head><body><div class="wrap">
 <div class="top"><h1>RM換算表</h1><button id="mode" type="button" aria-label="表示モードを切り替え" title="表示モードを切り替え"></button></div>
 <div class="card"><div class="ctl">
-<div><label for="s">開始重量（kg）</label><input id="s" type="number" inputmode="decimal" min="0" step="any" value="40" list="sl"><datalist id="sl"><option value="0"><option value="10"><option value="20"><option value="30"><option value="40"><option value="50"><option value="60"><option value="70"><option value="80"><option value="90"><option value="100"></datalist></div>
+<div><label for="s">開始重量（kg）</label><select id="s"><option>0</option><option>10</option><option>20</option><option>30</option><option selected>40</option><option>50</option><option>60</option><option>70</option><option>80</option><option>90</option><option>100</option><option>110</option><option>120</option><option>130</option><option>140</option><option>150</option><option>160</option><option>170</option><option>180</option><option>190</option><option>200</option></select></div>
 <div><label for="st">重量の刻み</label><select id="st"><option>1.25</option><option>2.5</option><option selected>5</option><option>10</option></select></div>
 <div><label for="n">行数</label><select id="n"><option>15</option><option selected>25</option><option>40</option></select></div>
 <div><label for="f">計算式</label><select id="f"><option value="avg" selected>平均（Epley＋Brzycki）</option><option value="ep">Epley</option><option value="br">Brzycki</option></select></div>
